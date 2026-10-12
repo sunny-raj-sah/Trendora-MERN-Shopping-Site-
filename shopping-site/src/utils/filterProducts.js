@@ -144,13 +144,30 @@ export const filterProducts = (
   }
 
   // Price
+  // const price = Number(selectedPrice);
+
+  // if (!Number.isNaN(price)) {
+  //   filteredProducts = filteredProducts.filter((product) => {
+  //     return Number(product?.price || 0) <= price;
+  //   });
+  // }
+  
+  // Price
   const price = Number(selectedPrice);
 
-  if (!Number.isNaN(price)) {
+  if (
+    selectedPrice !== null &&
+    selectedPrice !== undefined &&
+    selectedPrice !== "" &&
+    Number.isFinite(price)
+  ) {
     filteredProducts = filteredProducts.filter((product) => {
-      return Number(product?.price || 0) <= price;
+      const productPrice = Number(product?.price);
+
+      return Number.isFinite(productPrice) && productPrice <= price;
     });
   }
+
 
   // Sort
   if (sortBy === "LOW_TO_HIGH") {

@@ -455,10 +455,10 @@ const FilterSidebar = () => {
   // ==========================
   const brands = [...new Set(state.products.map((product) => product.brand))];
 
-  const maxPrice = Math.max(
-    ...state.products.map((product) => product.price),
-    0
-  );
+  // const maxPrice = Math.max(
+  //   ...state.products.map((product) => product.price),
+  //   0
+  // );
 
   // ==========================
   // Brand Handler
@@ -549,7 +549,7 @@ const FilterSidebar = () => {
         {/* Price */}
         {/* ========================= */}
 
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <h5 className="fw-bold mb-3">Price</h5>
 
           <div className="d-flex justify-content-between small text-muted">
@@ -574,7 +574,83 @@ const FilterSidebar = () => {
               })
             }
           />
+        </div> */}
+
+           
+
+{/* Price */}
+<div className="mb-5">
+  <h5 className="fw-bold mb-3">Price</h5>
+
+  {(() => {
+    const prices = state.products
+      .map((product) => Number(product?.price))
+      .filter(
+        (price) => Number.isFinite(price) && price >= 0
+      );
+
+    const maxPrice = prices.length
+      ? Math.max(...prices)
+      : 0;
+
+    const currentPrice = Number(state.selectedPrice);
+
+    const sliderPrice =
+      Number.isFinite(currentPrice) &&
+      currentPrice >= 0
+        ? Math.min(currentPrice, maxPrice)
+        : maxPrice;
+
+    return (
+      <>
+        <div className="d-flex justify-content-between small text-muted">
+          <span>₹0</span>
+
+          <span className="fw-semibold text-dark">
+            Up to ₹{sliderPrice.toLocaleString("en-IN")}
+          </span>
+
+          <span>₹{maxPrice.toLocaleString("en-IN")}</span>
         </div>
+
+        <input
+          className="form-range mt-2"
+          type="range"
+          min={0}
+          max={maxPrice}
+          step={100}
+          value={sliderPrice}
+          disabled={maxPrice <= 0}
+          onChange={(e) => {
+            dispatch({
+              type: "SET_PRICE",
+              payload: Number(e.target.value),
+            });
+          }}
+        />
+
+        <div className="d-flex justify-content-between mt-1">
+          <small className="text-muted">Minimum</small>
+
+          <button
+            type="button"
+            className="btn btn-sm btn-link p-0 text-decoration-none"
+            onClick={() =>
+              dispatch({
+                type: "SET_PRICE",
+                payload: maxPrice,
+              })
+            }
+          >
+            Reset price
+          </button>
+        </div>
+      </>
+    );
+  })()}
+</div>
+
+
 
         {/* ========================= */}
         {/* Rating */}
